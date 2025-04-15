@@ -3,6 +3,8 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 
+const API = import.meta.env.VITE_API_URL;
+
 function App() {
   const [tasks, setTasks] = useState([]);
   const [newTitle, setNewTitle] = useState("");
@@ -19,13 +21,13 @@ function App() {
   const [endDate, setEndDate] = useState("");
 
   const fetchTasks = async () => {
-    const res = await fetch("http://localhost:3000/api/tasks");
+    const res = await fetch(`${API}/api/tasks`);
     const data = await res.json();
     setTasks(data);
   };
 
   const fetchFilteredTasks = async () => {
-    let url = `http://localhost:3000/api/tasks/filter?start=${startDate}`;
+    let url = `${API}/api/tasks/filter?start=${startDate}`;
     if (endDate) url += `&end=${endDate}`;
     const res = await fetch(url);
     const data = await res.json();
@@ -33,7 +35,7 @@ function App() {
   };
 
   const fetchSortedTasks = async () => {
-    const res = await fetch("http://localhost:3000/api/tasks/sorted");
+    const res = await fetch(`${API}/api/tasks/sorted`);
     const data = await res.json();
     setTasks(data);
   };
@@ -48,7 +50,7 @@ function App() {
 
   const addTask = async () => {
     if (!newTitle.trim()) return;
-    await fetch("http://localhost:3000/api/tasks", {
+    await fetch(`${API}/api/tasks`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ title: newTitle, dueDate, time }),
@@ -60,7 +62,7 @@ function App() {
   };
 
   const toggleTask = async (task) => {
-    await fetch(`http://localhost:3000/api/tasks/${task._id}`, {
+    await fetch(`${API}/api/tasks/${task._id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ completed: !task.completed }),
@@ -69,7 +71,7 @@ function App() {
   };
 
   const deleteTask = async (id) => {
-    await fetch(`http://localhost:3000/api/tasks/${id}`, { method: "DELETE" });
+    await fetch(`${API}/api/tasks/${id}`, { method: "DELETE" });
     view === "main" ? fetchTasks() : view === "sorted" ? fetchSortedTasks() : fetchFilteredTasks();
   };
 
@@ -81,7 +83,7 @@ function App() {
   };
 
   const saveEdit = async () => {
-    await fetch(`http://localhost:3000/api/tasks/${editingTask}`, {
+    await fetch(`${API}/api/tasks/${editingTask}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ title: editTitle, dueDate: editDate, time: editTime }),
